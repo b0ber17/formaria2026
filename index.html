@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎉 Happy Birthday Maria! 🎉</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            height: 100vh;
+            background: #0a0a0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Canvas для эффекта матрицы */
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: block;
+            transition: opacity 0.8s ease-out;
+        }
+
+        canvas.fade-out {
+            opacity: 0;
+        }
+
+        /* Контейнер для контента */
+        .container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* ЭТАП 1: Обратный отсчёт */
+        .countdown {
+            font-size: 200px;
+            font-weight: bold;
+            color: #ff1493;
+            text-shadow: 0 0 20px #ff1493, 0 0 40px #ff69b4, 0 0 60px #ff1493;
+            opacity: 0;
+            transform: scale(0.3);
+            position: absolute;
+            line-height: 1;
+            letter-spacing: 10px;
+        }
+
+        .countdown.show {
+            animation: countdownPop 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+        }
+
+        @keyframes countdownPop {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes countdownFade {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.5);
+            }
+        }
+
+        .countdown.fade {
+            animation: countdownFade 0.5s ease-out forwards;
+        }
+
+        /* ЭТАП 2: Слова */
+        .words-wrapper {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .words-wrapper.show {
+            opacity: 1;
+            transform: translateY(0);
+            animation: wordsAppear 0.6s ease-out forwards;
+        }
+
+        @keyframes wordsAppear {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .word {
+            font-size: 80px;
+            font-weight: bold;
+            color: #ff1493;
+            text-shadow: 0 0 30px #ff1493, 0 0 60px #ff69b4, 0 0 90px #ffb6d9;
+            display: inline-block;
+            margin: 0 20px;
+            opacity: 0;
+            transform: translateY(30px) scale(0.8);
+        }
+
+        .word.show {
+            animation: wordFadeIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes wordFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.8);
+            }
+            50% {
+                transform: translateY(-10px) scale(1.05);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .word.hide {
+            animation: wordFadeOut 0.8s ease-out forwards;
+        }
+
+        @keyframes wordFadeOut {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.8);
+            }
+        }
+
+        /* ЭТАП 3: Большое сердечко */
+        .big-heart {
+            font-size: 200px;
+            opacity: 0;
+            display: block;
+            filter: drop-shadow(0 0 40px #ff1493) drop-shadow(0 0 80px #ff69b4);
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(0.5) rotate(-20deg);
+            z-index: 15;
+        }
+
+        .big-heart.show {
+            animation: heartAppear 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes heartAppear {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.3) rotate(-30deg);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.15) rotate(5deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            }
+        }
+
+        /* ЭТАП 4: Финальный экран */
+        .final-screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 60px;
+            opacity: 0;
+            z-index: 5;
+            transition: opacity 1s ease-out;
+        }
+
+        .final-screen.show {
+            opacity: 1;
+        }
+
+        .photo-container {
+            opacity: 0;
+            transform: translateX(100px) scale(0.8);
+        }
+
+        .final-screen.show .photo-container {
+            animation: photoSlideIn 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards 0.3s;
+        }
+
+        @keyframes photoSlideIn {
+            0% {
+                opacity: 0;
+                transform: translateX(100px) scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        .photo-container img {
+            width: 300px;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid #ff1493;
+            box-shadow: 0 0 30px rgba(255, 20, 147, 0.6), 0 0 60px rgba(255, 105, 180, 0.3);
+        }
+
+        .wishes-container {
+            opacity: 0;
+            transform: translateX(-100px) scale(0.8);
+        }
+
+        .final-screen.show .wishes-container {
+            animation: wishesSlideIn 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards 0.6s;
+        }
+
+        @keyframes wishesSlideIn {
+            0% {
+                opacity: 0;
+                transform: translateX(-100px) scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        .wishes-text {
+            font-size: 48px;
+            color: #ff1493;
+            text-shadow: 0 0 30px #ff1493, 0 0 60px #ff69b4;
+            font-weight: bold;
+            max-width: 400px;
+            line-height: 1.4;
+        }
+
+        .wishes-text.emoji {
+            font-size: 60px;
+            margin-top: 20px;
+        }
+
+        /* Плавающие сердечки */
+        .heart {
+            position: absolute;
+            font-size: 30px;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes float-left {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .heart.floating {
+            animation: float linear forwards;
+        }
+
+        .heart.floating-left {
+            animation: float-left linear forwards;
+        }
+
+        /* Искры */
+        .spark {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background-color: #ff1493;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #ff1493;
+            pointer-events: none;
+        }
+
+        @keyframes spark {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(0);
+            }
+        }
+
+        .spark.burst {
+            animation: spark 1s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- Canvas для эффекта матрицы -->
+    <canvas id="matrixCanvas"></canvas>
+
+    <!-- Основной контейнер -->
+    <div class="container" id="container">
+        <!-- ЭТАП 1: Обратный отсчёт -->
+        <div class="countdown" id="countdown"></div>
+
+        <!-- ЭТАП 2: Слова -->
+        <div class="words-wrapper" id="wordsWrapper">
+            <div class="word" id="word1">Happy</div>
+            <div class="word" id="word2">Birthday</div>
+            <div class="word" id="word3">Maria</div>
+        </div>
+
+        <!-- ЭТАП 3: Большое сердечко -->
+        <div class="big-heart" id="bigHeart">❤️</div>
+
+        <!-- ЭТАП 4: Финальный экран -->
+        <div class="final-screen" id="finalScreen">
+            <div class="photo-container">
+                <img src="maria.jpg" alt="Maria" onerror="this.style.display='none'">
+            </div>
+            <div class="wishes-container">
+                <div class="wishes-text">Желаю тебе счастья, здоровья и нескончаемого вдохновения!</div>
+                <div class="wishes-text emoji">💖🎉🌟</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // ИНИЦИАЛИЗАЦИЯ И НАСТРОЙКА
+        // ==========================================
+
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+        const container = document.getElementById('container');
+        const countdownEl = document.getElementById('countdown');
+        const wordsWrapper = document.getElementById('wordsWrapper');
+        const word1 = document.getElementById('word1');
+        const word2 = document.getElementById('word2');
+        const word3 = document.getElementById('word3');
+        const bigHeart = document.getElementById('bigHeart');
+        const finalScreen = document.getElementById('finalScreen');
+
+        // Установка размера canvas
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // ==========================================
+        // ЭФФЕКТ МАТРИЦЫ
+        // ==========================================
+
+        const chars = '❤️';
+        const charArray = chars.split('');
+        const fontSize = 20;
+        let columns = Math.ceil(canvas.width / fontSize);
+        let drops = new Array(columns).fill(1);
+
+        function drawMatrix() {
+            // Половинчатое стирание фона для ленивого эффекта
+            ctx.fillStyle = 'rgba(10, 10, 10, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Зеленоватый оттенок матрицы (изменён на розовый)
+            ctx.fillStyle = '#ff1493';
+            ctx.shadowColor = '#ff69b4';
+            ctx.shadowBlur = 10;
+            ctx.font = `bold ${fontSize}px 'Arial'`;
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = charArray[Math.floor(Math.random() * charArray.length)];
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+
+                // Изменение прозрачности в зависимости от позиции
+                const opacity = Math.min(1, (drops[i] - Math.floor(drops[i])) + 0.5);
+                ctx.globalAlpha = opacity;
+
+                ctx.fillText(text, x, y);
+
+                drops[i]++;
+
+                // Случайное перезагружение колонки
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.95) {
+                    drops[i] = 0;
+                }
+            }
+
+            ctx.globalAlpha = 1;
+            ctx.shadowColor = 'transparent';
+        }
+
+        // Запуск эффекта матрицы
+        let matrixInterval = setInterval(drawMatrix, 50);
+
+        // ==========================================
+        // ПЛАВАЮЩИЕ СЕРДЕЧКИ
+        // ==========================================
+
+        function createFloatingHearts() {
+            for (let i = 0; i < 8; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart floating';
+                    if (Math.random() > 0.5) {
+                        heart.classList.add('floating-left');
+                    }
+
+                    heart.textContent = Math.random() > 0.5 ? '❤️' : '💕';
+                    const startX = Math.random() * window.innerWidth;
+                    heart.style.left = startX + 'px';
+                    heart.style.bottom = '0px';
+                    heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
+
+                    document.body.appendChild(heart);
+
+                    // Удаление элемента после завершения анимации
+                    setTimeout(() => {
+                        heart.remove();
+                    }, (Math.random() * 3 + 4) * 1000);
+                }, i * 300);
+            }
+        }
+
+        // Продолжаем создавать сердечки после появления сообщения
+        function startHeartLoop() {
+            createFloatingHearts();
+            setInterval(createFloatingHearts, 3000);
+        }
+
+        // ==========================================
+        // ЭФФЕКТ ИСКР / ЧАСТИЦ
+        // ==========================================
+
+        function createSpark(x, y) {
+            const spark = document.createElement('div');
+            spark.className = 'spark burst';
+
+            const angle = (Math.PI * 2 * Math.random());
+            const velocity = Math.random() * 100 + 50;
+            const tx = Math.cos(angle) * velocity;
+            const ty = Math.sin(angle) * velocity;
+
+            spark.style.left = x + 'px';
+            spark.style.top = y + 'px';
+            spark.style.setProperty('--tx', tx + 'px');
+            spark.style.setProperty('--ty', ty + 'px');
+
+            document.body.appendChild(spark);
+
+            setTimeout(() => {
+                spark.remove();
+            }, 1000);
+        }
+
+        function createSparkBurst(x, y, count = 12) {
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    createSpark(x, y);
+                }, i * 30);
+            }
+        }
+
+        // ==========================================
+        // ОБРАТНЫЙ ОТСЧЁТ
+        // ==========================================
+
+        let countdownActive = true;
+
+        function startCountdown() {
+            let count = 3;
+
+            function showNumber() {
+                if (count > 0) {
+                    countdownEl.textContent = count;
+                    countdownEl.classList.remove('show', 'fade');
+                    // Небольшая задержка для перезапуска анимации
+                    setTimeout(() => {
+                        countdownEl.classList.add('show');
+                    }, 10);
+
+                    count--;
+                    setTimeout(showNumber, 1000);
+                } else {
+                    // Исчезание последнего числа
+                    countdownEl.classList.remove('show');
+                    countdownEl.classList.add('fade');
+
+                    setTimeout(() => {
+                        countdownEl.style.display = 'none';
+                        showMessage();
+                    }, 500);
+                }
+            }
+
+            showNumber();
+        }
+
+        // ==========================================
+        // ФИНАЛЬНОЕ СООБЩЕНИЕ
+        // ==========================================
+
+        function showMessage() {
+            // ЭТАП 2: Показываем слова по очереди
+            setTimeout(() => {
+                word1.classList.add('show');
+                createSparkBurst(window.innerWidth / 2, window.innerHeight / 2, 20);
+            }, 100);
+
+            setTimeout(() => {
+                word2.classList.add('show');
+            }, 1100);
+
+            setTimeout(() => {
+                word3.classList.add('show');
+            }, 2100);
+
+            // ЭТАП 3: Через 2 секунды - исчезновение слов
+            setTimeout(() => {
+                word1.classList.add('hide');
+                word2.classList.add('hide');
+                word3.classList.add('hide');
+            }, 3100);
+
+            // ЭТАП 3: Показываем большое сердечко
+            setTimeout(() => {
+                bigHeart.classList.add('show');
+            }, 3900);
+
+            // ЭТАП 3: Матрица плавно исчезает
+            setTimeout(() => {
+                canvas.classList.add('fade-out');
+            }, 4000);
+            
+            setTimeout(() => {
+                canvas.style.pointerEvents = 'none';
+                clearInterval(matrixInterval);
+            }, 4800);
+
+            // ЭТАП 4: Показываем финальный экран с фото и текстом
+            setTimeout(() => {
+                bigHeart.style.display = 'none';
+                finalScreen.classList.add('show');
+            }, 5500);
+
+            // Запускаем плавающие сердечки
+            setTimeout(() => {
+                startHeartLoop();
+            }, 500);
+
+            // Создаём периодические взрывы частиц
+            setTimeout(() => {
+                setInterval(() => {
+                    const randomX = Math.random() * window.innerWidth;
+                    const randomY = Math.random() * window.innerHeight;
+                    if (Math.random() > 0.7) {
+                        createSparkBurst(randomX, randomY, 8);
+                    }
+                }, 2000);
+            }, 500);
+        }
+
+        // ==========================================
+        // ЗАПУСК АНИМАЦИИ
+        // ==========================================
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                startCountdown();
+            }, 500);
+        });
+
+        // Стартуем сразу, если документ уже загружен
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => {
+                    startCountdown();
+                }, 500);
+            });
+        } else {
+            setTimeout(() => {
+                startCountdown();
+            }, 500);
+        }
+    </script>
+</body>
+</html>
